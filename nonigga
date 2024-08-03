@@ -28,7 +28,7 @@ local Window = Rayfield:CreateWindow({
 
 local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
 
-local Paragraph = Tab:CreateParagraph({Title = "Update 1.0.0a", Content = "Added nothing:\n  • Wanna know what i added? i added 𝒏𝒐𝒕𝒉𝒊𝒏𝒈."})
+local Paragraph = Tab:CreateParagraph({Title = "Update 1.0.0a", Content = "• Wanna know what i added? i added 𝒏𝒐𝒕𝒉𝒊𝒏𝒈."})
 local TimeLabel = Tab:CreateLabel("Time: [##:##]")
 local PlayersLabel = Tab:CreateLabel("Players in server: [0/0]")
 local PlaceIdLabel = Tab:CreateLabel("Place ID: [0]")
