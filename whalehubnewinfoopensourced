@@ -6,70 +6,60 @@ local Window = Rayfield:CreateWindow({
    LoadingSubtitle = "by Sirius",
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = nil,
+      FolderName = nil, -- Create a custom folder for your hub/game
       FileName = "Big Hub"
    },
    Discord = {
       Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
    },
-   KeySystem = false,
+   KeySystem = false, -- Set this to true to use our key system
    KeySettings = {
       Title = "Untitled",
       Subtitle = "Key System",
       Note = "No method of obtaining the key is provided",
-      FileName = "Key",
-      SaveKey = true,
-      GrabKeyFromSite = false,
-      Key = {"Hello"}
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
    }
 })
 
-local Tab = Window:CreateTab("Home", 4483362458)
-local Paragraph = Tab:CreateParagraph({Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!", Content = "Paragraph Example"})
+local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
+local Paragraph = Tab:CreateParagraph({
+   Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!",
+   Content = "Paragraph Example"
+})
 
+-- Function to get the current time formatted as HH:MM
+local function getTime()
+    return os.date("%H:%M")
+end
+
+-- Function to update the Paragraph content with real-time data
 local function updateParagraph()
-    local currentTime = os.date("%H:%M")
-    local players = #game.Players:GetPlayers()
-    local maxPlayers = game.GameSettings.MaxPlayers
+    local time = getTime()
+    local plrs = #game.Players:GetPlayers()
+    local plrsthatcanfitintheserver = game.Players.MaxPlayers
     local placeId = game.PlaceId
     local accountAge = game.Players.LocalPlayer.AccountAge
     local accountId = game.Players.LocalPlayer.UserId
-    local gameName = game.PlaceId -- Assuming PlaceId can be used to get the game name
+    local gameName = game.Name
+    
+    local content = string.format(
+        "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\nAccount Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
+        time, plrs, plrsthatcanfitintheserver, placeId, accountAge, accountId, gameName
+    )
 
-    -- Determine the appropriate time of day greeting
-    local hour = tonumber(os.date("%H"))
-    local greeting
-    if hour < 12 then
-        greeting = "Morning"
-    elseif hour < 17 then
-        greeting = "Afternoon"
-    elseif hour < 20 then
-        greeting = "Evening"
-    else
-        greeting = "Night"
-    end
-
-    -- Update the paragraph
     Paragraph:Set({
-        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, game.Players.LocalPlayer.Name),
-        Content = string.format([[
-Time: [ %s ]
-Players in server: [ %d/%d ]
-Place ID: [ %d ]
-Account Age: [ %d days ]
-Account ID: [ %d ]
-Game Name: [ %s ]]],
-        currentTime, players, maxPlayers, placeId, accountAge, accountId, gameName)
+        Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!",
+        Content = content
     })
 end
 
--- Call the update function to set the initial content
-updateParagraph()
-
--- Optionally update at intervals
+-- Update the Paragraph every minute
 while true do
     updateParagraph()
-    wait(0.1) -- Update every 60 seconds
+    wait(0.3) -- Wait for 60 seconds
 end
