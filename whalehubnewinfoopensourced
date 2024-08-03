@@ -107,14 +107,9 @@ local function updateParagraph()
     local executionCount = getExecutionCount()
 
     local content = string.format(
-        "Good %s %s. You've executed this %d times.\n" ..
-        "You are currently %s\n\n" ..
-        "Time: [%s]\n" ..
-        "Players in server: [%d/%d]\n" ..
-        "Place ID: [%d]\n" ..
-        "Account Age: [%d days]\n" ..
-        "Account ID: [%d]\n" ..
-        "Game Name: [%s]",
+        "Good %s %s.\nYou've executed this %d times.\nYou are currently %s.\n\n" ..
+        "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\n" ..
+        "Account Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
         timeOfDay,
         details.username,
         executionCount,
@@ -131,8 +126,8 @@ local function updateParagraph()
     Paragraph:Set({Title = "Paragraph Example", Content = content})
 end
 
--- Update the paragraph every millisecond (or a more reasonable interval)
+-- Update the paragraph every second (or adjust the interval as needed)
 while true do
     updateParagraph()
-    wait(0.1)
+    wait(1) -- Adjust the wait time as needed
 end
