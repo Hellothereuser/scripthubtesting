@@ -26,101 +26,50 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
-local Paragraph = Tab:CreateParagraph({Title = "Paragraph Example", Content = "Initializing..."})
+local Tab = Window:CreateTab("Home", 4483362458)
+local Paragraph = Tab:CreateParagraph({Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!", Content = "Paragraph Example"})
 
--- Function to get the time of day
-local function getTimeOfDay()
-    local hour = tonumber(os.date("%H"))
-    if hour < 12 then
-        return "Morning"
-    elseif hour < 18 then
-        return "Afternoon"
-    else
-        return "Night"
-    end
-end
-
--- Function to get account details
-local function getAccountDetails()
-    local player = game.Players.LocalPlayer
-    local userName = player.Name
-    local accountAge = player.AccountAge
-    local accountId = player.UserId
-    local isPremium = player.MembershipType == Enum.MembershipType.Premium and "Premium" or "Not Premium"
-
+local function updateParagraph()
+    local currentTime = os.date("%H:%M")
+    local players = #game.Players:GetPlayers()
+    local maxPlayers = game.GameSettings.MaxPlayers
     local placeId = game.PlaceId
-    local gameName = game:GetService("MarketplaceService"):GetProductInfo(placeId).Name
-    local serverPlayers = #game.Players:GetPlayers()
-    local maxPlayers = game:GetService("Players").MaxPlayers
+    local accountAge = game.Players.LocalPlayer.AccountAge
+    local accountId = game.Players.LocalPlayer.UserId
+    local gameName = game.PlaceId -- Assuming PlaceId can be used to get the game name
 
-    -- Get current time
-    local currentTime = os.date("%X")
-
-    return {
-        username = userName,
-        accountAge = accountAge,
-        accountId = accountId,
-        premiumStatus = isPremium,
-        time = currentTime,
-        playersInServer = serverPlayers,
-        maxPlayers = maxPlayers,
-        placeId = placeId,
-        gameName = gameName
-    }
-end
-
--- Function to get or set the execution count based on HWID
-local function getExecutionCount()
-    local player = game.Players.LocalPlayer
-    local userId = player.UserId
-
-    -- Check if DataStore service is available
-    local success, dataStore = pcall(function()
-        return game:GetService("DataStoreService"):GetDataStore("ExecutionCountStore")
-    end)
-
-    if not success then
-        warn("Failed to access DataStoreService.")
-        return 0
+    -- Determine the appropriate time of day greeting
+    local hour = tonumber(os.date("%H"))
+    local greeting
+    if hour < 12 then
+        greeting = "Morning"
+    elseif hour < 17 then
+        greeting = "Afternoon"
+    elseif hour < 20 then
+        greeting = "Evening"
+    else
+        greeting = "Night"
     end
 
-    -- Retrieve the current execution count
-    local executionCount = dataStore:GetAsync(tostring(userId))
-    if executionCount == nil then
-        executionCount = 0
-    end
-
-    -- Increment and save the count
-    executionCount = executionCount + 1
-    pcall(function()
-        dataStore:SetAsync(tostring(userId), executionCount)
-    end)
-
-    return executionCount
+    -- Update the paragraph
+    Paragraph:Set({
+        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, game.Players.LocalPlayer.Name),
+        Content = string.format([[
+Time: [ %s ]
+Players in server: [ %d/%d ]
+Place ID: [ %d ]
+Account Age: [ %d days ]
+Account ID: [ %d ]
+Game Name: [ %s ]]],
+        currentTime, players, maxPlayers, placeId, accountAge, accountId, gameName)
+    })
 end
 
--- Get details and format the content
-local details = getAccountDetails()
-local timeOfDay = getTimeOfDay()
-local executionCount = getExecutionCount()
+-- Call the update function to set the initial content
+updateParagraph()
 
-local content = string.format(
-    "Good %s %s.\nYou've executed this %d times.\nYou are currently %s.\n\n" ..
-    "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\n" ..
-    "Account Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
-    timeOfDay,
-    details.username,
-    executionCount,
-    details.premiumStatus,
-    details.time,
-    details.playersInServer,
-    details.maxPlayers,
-    details.placeId,
-    details.accountAge,
-    details.accountId,
-    details.gameName
-)
-
--- Set the paragraph content
-Paragraph:Set({Title = "Paragraph Example", Content = content})
+-- Optionally update at intervals
+while true do
+    updateParagraph()
+    wait(0.1) -- Update every 60 seconds
+end
