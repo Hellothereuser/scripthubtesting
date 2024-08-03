@@ -1,0 +1,103 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Rayfield Example Window",
+   LoadingTitle = "Rayfield Interface Suite",
+   LoadingSubtitle = "by Sirius",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
+
+-- Create labels for each piece of content
+local TimeLabel = Tab:CreateLabel("Time: [##:##]")
+local PlayersLabel = Tab:CreateLabel("Players in server: [0/0]")
+local PlaceIdLabel = Tab:CreateLabel("Place ID: [0]")
+local AccountAgeLabel = Tab:CreateLabel("Account Age: [0 days]")
+local AccountIdLabel = Tab:CreateLabel("Account ID: [0]")
+local GameNameLabel = Tab:CreateLabel("Game Name: [Unknown]")
+
+local Paragraph = Tab:CreateParagraph({
+   Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox hub remake!",
+   Content = "Paragraph Example"
+})
+
+-- Function to get the current time formatted as HH:MM
+local function getTime()
+    return os.date("%H:%M")
+end
+
+-- Function to get the appropriate time of day
+local function getGreeting()
+    local hour = tonumber(os.date("%H"))
+    if hour < 12 then
+        return "Morning"
+    elseif hour < 18 then
+        return "Afternoon"
+    else
+        return "Evening"
+    end
+end
+
+-- Function to get the game name using MarketplaceService
+local function getGameName()
+    local marketplaceService = game:GetService("MarketplaceService")
+    local success, result = pcall(function()
+        return marketplaceService:GetProductInfo(game.PlaceId).Name
+    end)
+    if success then
+        return result
+    else
+        return "Unknown"
+    end
+end
+
+-- Function to update the labels and Paragraph content with real-time data
+local function updateUI()
+    Paragraph:Set({
+        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
+        Content = ""
+    })
+
+    local time = getTime()
+    local greeting = getGreeting()
+    local player = game.Players.LocalPlayer.Name
+    local plrs = #game.Players:GetPlayers()
+    local plrsthatcanfitintheserver = game.Players.MaxPlayers
+    local placeId = game.PlaceId
+    local accountAge = game.Players.LocalPlayer.AccountAge
+    local accountId = game.Players.LocalPlayer.UserId
+    local gameName = getGameName()
+    
+    TimeLabel:Set(string.format("Time: [ %s ]", time))
+    PlayersLabel:Set(string.format("Players in server: [ %d/%d ]", plrs, plrsthatcanfitintheserver))
+    PlaceIdLabel:Set(string.format("Place ID: [ %d ]", placeId))
+    AccountAgeLabel:Set(string.format("Account Age: [ %d days ]", accountAge))
+    AccountIdLabel:Set(string.format("Account ID: [ %d ]", accountId))
+    GameNameLabel:Set(string.format("Game Name: [ %s]", gameName))
+end
+
+-- Update the UI every minute
+while true do
+    updateUI()
+    wait(0.1) -- Wait for 60 seconds
+end
