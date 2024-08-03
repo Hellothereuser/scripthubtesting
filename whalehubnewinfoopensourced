@@ -73,6 +73,11 @@ end
 
 -- Function to update the labels and Paragraph content with real-time data
 local function updateUI()
+    Paragraph:Set({
+        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
+        Content = ""
+    })
+
     local time = getTime()
     local greeting = getGreeting()
     local player = game.Players.LocalPlayer.Name
@@ -83,21 +88,16 @@ local function updateUI()
     local accountId = game.Players.LocalPlayer.UserId
     local gameName = getGameName()
     
-    TimeLabel:Set(string.format("Time: [%s]", time))
-    PlayersLabel:Set(string.format("Players in server: [%d/%d]", plrs, plrsthatcanfitintheserver))
-    PlaceIdLabel:Set(string.format("Place ID: [%d]", placeId))
-    AccountAgeLabel:Set(string.format("Account Age: [%d days]", accountAge))
-    AccountIdLabel:Set(string.format("Account ID: [%d]", accountId))
-    GameNameLabel:Set(string.format("Game Name: [%s]", gameName))
-    
-    Paragraph:Set({
-        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
-        Content = "Paragraph Example"
-    })
+    TimeLabel:Set(string.format("Time: [ %s ]", time))
+    PlayersLabel:Set(string.format("Players in server: [ %d/%d ]", plrs, plrsthatcanfitintheserver))
+    PlaceIdLabel:Set(string.format("Place ID: [ %d ]", placeId))
+    AccountAgeLabel:Set(string.format("Account Age: [ %d days ]", accountAge))
+    AccountIdLabel:Set(string.format("Account ID: [ %d ]", accountId))
+    GameNameLabel:Set(string.format("Game Name: [ %s]", gameName))
 end
 
 -- Update the UI every minute
 while true do
     updateUI()
-    wait(60) -- Wait for 60 seconds
+    wait(0.1) -- Wait for 60 seconds
 end
