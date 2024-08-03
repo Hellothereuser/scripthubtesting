@@ -1,0 +1,133 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Rayfield Example Window",
+   LoadingTitle = "Rayfield Interface Suite",
+   LoadingSubtitle = "by Sirius",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+   KeySystem = false,
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"Hello"}
+   }
+})
+
+local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
+
+-- Function to get the time of day
+local function getTimeOfDay()
+    local hour = tonumber(os.date("%H"))
+    if hour < 12 then
+        return "Morning"
+    elseif hour < 18 then
+        return "Afternoon"
+    else
+        return "Night"
+    end
+end
+
+-- Function to get account details
+local function getAccountDetails()
+    local player = game.Players.LocalPlayer
+    local userName = player.Name
+    local accountAge = player.AccountAge
+    local accountId = player.UserId
+    local isPremium = player.MembershipType == Enum.MembershipType.Premium and "Premium" or "Not Premium"
+
+    local placeId = game.PlaceId
+    local gameName = game:GetService("MarketplaceService"):GetProductInfo(placeId).Name
+    local serverPlayers = #game.Players:GetPlayers()
+    local maxPlayers = game:GetService("Players").MaxPlayers
+
+    -- Get current time
+    local currentTime = os.date("%X")
+
+    return {
+        username = userName,
+        accountAge = accountAge,
+        accountId = accountId,
+        premiumStatus = isPremium,
+        time = currentTime,
+        playersInServer = serverPlayers,
+        maxPlayers = maxPlayers,
+        placeId = placeId,
+        gameName = gameName
+    }
+end
+
+-- Function to get or set the execution count based on HWID
+local function getExecutionCount()
+    local player = game.Players.LocalPlayer
+    local userId = player.UserId
+
+    -- Check if DataStore service is available
+    local success, dataStore = pcall(function()
+        return game:GetService("DataStoreService"):GetDataStore("ExecutionCountStore")
+    end)
+
+    if not success then
+        warn("Failed to access DataStoreService.")
+        return 0
+    end
+
+    -- Retrieve the current execution count
+    local executionCount = dataStore:GetAsync(tostring(userId))
+    if executionCount == nil then
+        executionCount = 0
+    end
+
+    -- Increment and save the count
+    executionCount = executionCount + 1
+    pcall(function()
+        dataStore:SetAsync(tostring(userId), executionCount)
+    end)
+
+    return executionCount
+end
+
+-- Function to update the paragraph
+local function updateParagraph()
+    local details = getAccountDetails()
+    local timeOfDay = getTimeOfDay()
+    local executionCount = getExecutionCount()
+
+    local content = string.format(
+        "Good %s %s. You've executed this %d times.\n" ..
+        "You are currently %s\n\n" ..
+        "Time: [%s]\n" ..
+        "Players in server: [%d/%d]\n" ..
+        "Place ID: [%d]\n" ..
+        "Account Age: [%d days]\n" ..
+        "Account ID: [%d]\n" ..
+        "Game Name: [%s]",
+        timeOfDay,
+        details.username,
+        executionCount,
+        details.premiumStatus,
+        details.time,
+        details.playersInServer,
+        details.maxPlayers,
+        details.placeId,
+        details.accountAge,
+        details.accountId,
+        details.gameName
+    )
+
+    Tab:CreateParagraph({Title = "Paragraph Example", Content = content})
+end
+
+updateParagraph()
