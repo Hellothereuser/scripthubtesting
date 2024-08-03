@@ -27,14 +27,35 @@ local Window = Rayfield:CreateWindow({
 })
 
 local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
+
+-- Create labels for each piece of content
+local TimeLabel = Tab:CreateLabel("Time: [##:##]")
+local PlayersLabel = Tab:CreateLabel("Players in server: [0/0]")
+local PlaceIdLabel = Tab:CreateLabel("Place ID: [0]")
+local AccountAgeLabel = Tab:CreateLabel("Account Age: [0 days]")
+local AccountIdLabel = Tab:CreateLabel("Account ID: [0]")
+local GameNameLabel = Tab:CreateLabel("Game Name: [Unknown]")
+
 local Paragraph = Tab:CreateParagraph({
-   Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!",
+   Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox hub remake!",
    Content = "Paragraph Example"
 })
 
 -- Function to get the current time formatted as HH:MM
 local function getTime()
     return os.date("%H:%M")
+end
+
+-- Function to get the appropriate time of day
+local function getGreeting()
+    local hour = tonumber(os.date("%H"))
+    if hour < 12 then
+        return "Morning"
+    elseif hour < 18 then
+        return "Afternoon"
+    else
+        return "Evening"
+    end
 end
 
 -- Function to get the game name using MarketplaceService
@@ -50,9 +71,11 @@ local function getGameName()
     end
 end
 
--- Function to update the Paragraph content with real-time data
-local function updateParagraph()
+-- Function to update the labels and Paragraph content with real-time data
+local function updateUI()
     local time = getTime()
+    local greeting = getGreeting()
+    local player = game.Players.LocalPlayer.Name
     local plrs = #game.Players:GetPlayers()
     local plrsthatcanfitintheserver = game.Players.MaxPlayers
     local placeId = game.PlaceId
@@ -60,19 +83,21 @@ local function updateParagraph()
     local accountId = game.Players.LocalPlayer.UserId
     local gameName = getGameName()
     
-    local content = string.format(
-        "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\nAccount Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
-        time, plrs, plrsthatcanfitintheserver, placeId, accountAge, accountId, gameName
-    )
-
+    TimeLabel:Set(string.format("Time: [%s]", time))
+    PlayersLabel:Set(string.format("Players in server: [%d/%d]", plrs, plrsthatcanfitintheserver))
+    PlaceIdLabel:Set(string.format("Place ID: [%d]", placeId))
+    AccountAgeLabel:Set(string.format("Account Age: [%d days]", accountAge))
+    AccountIdLabel:Set(string.format("Account ID: [%d]", accountId))
+    GameNameLabel:Set(string.format("Game Name: [%s]", gameName))
+    
     Paragraph:Set({
-        Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!",
-        Content = content
+        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
+        Content = "Paragraph Example"
     })
 end
 
--- Update the Paragraph every minute
+-- Update the UI every minute
 while true do
-    updateParagraph()
+    updateUI()
     wait(60) -- Wait for 60 seconds
 end
