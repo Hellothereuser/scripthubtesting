@@ -92,7 +92,7 @@ local function updateUI()
     
     Paragraph:Set({
         Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
-        Content = "Paragraph Example"
+        Content = "This home system is open sourced. wont be for long though!"
     })
 end
 
