@@ -37,7 +37,7 @@ local AccountIdLabel = Tab:CreateLabel("Account ID: [0]")
 local GameNameLabel = Tab:CreateLabel("Game Name: [Unknown]")
 
 local Paragraph = Tab:CreateParagraph({
-   Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox hub remake!",
+   Title = "Good {time/Morning/Evening/Afternoon/Night}, {username}. Thanks for using my venox remake!",
    Content = "Paragraph Example"
 })
 
@@ -73,11 +73,6 @@ end
 
 -- Function to update the labels and Paragraph content with real-time data
 local function updateUI()
-    Paragraph:Set({
-        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
-        Content = ""
-    })
-
     local time = getTime()
     local greeting = getGreeting()
     local player = game.Players.LocalPlayer.Name
@@ -88,12 +83,17 @@ local function updateUI()
     local accountId = game.Players.LocalPlayer.UserId
     local gameName = getGameName()
     
-    TimeLabel:Set(string.format("Time: [ %s ]", time))
-    PlayersLabel:Set(string.format("Players in server: [ %d/%d ]", plrs, plrsthatcanfitintheserver))
-    PlaceIdLabel:Set(string.format("Place ID: [ %d ]", placeId))
-    AccountAgeLabel:Set(string.format("Account Age: [ %d days ]", accountAge))
-    AccountIdLabel:Set(string.format("Account ID: [ %d ]", accountId))
-    GameNameLabel:Set(string.format("Game Name: [ %s]", gameName))
+    TimeLabel:Set(string.format("Time: [%s]", time))
+    PlayersLabel:Set(string.format("Players in server: [%d/%d]", plrs, plrsthatcanfitintheserver))
+    PlaceIdLabel:Set(string.format("Place ID: [%d]", placeId))
+    AccountAgeLabel:Set(string.format("Account Age: [%d days]", accountAge))
+    AccountIdLabel:Set(string.format("Account ID: [%d]", accountId))
+    GameNameLabel:Set(string.format("Game Name: [%s]", gameName))
+    
+    Paragraph:Set({
+        Title = string.format("Good %s, %s. Thanks for using my venox remake!", greeting, player),
+        Content = "Paragraph Example"
+    })
 end
 
 -- Update the UI every minute
