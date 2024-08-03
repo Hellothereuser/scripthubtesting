@@ -37,6 +37,19 @@ local function getTime()
     return os.date("%H:%M")
 end
 
+-- Function to get the game name using MarketplaceService
+local function getGameName()
+    local marketplaceService = game:GetService("MarketplaceService")
+    local success, result = pcall(function()
+        return marketplaceService:GetProductInfo(game.PlaceId).Name
+    end)
+    if success then
+        return result
+    else
+        return "Unknown"
+    end
+end
+
 -- Function to update the Paragraph content with real-time data
 local function updateParagraph()
     local time = getTime()
@@ -45,7 +58,7 @@ local function updateParagraph()
     local placeId = game.PlaceId
     local accountAge = game.Players.LocalPlayer.AccountAge
     local accountId = game.Players.LocalPlayer.UserId
-    local gameName = game.Name
+    local gameName = getGameName()
     
     local content = string.format(
         "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\nAccount Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
@@ -61,5 +74,5 @@ end
 -- Update the Paragraph every minute
 while true do
     updateParagraph()
-    wait(0.3) -- Wait for 60 seconds
+    wait(60) -- Wait for 60 seconds
 end
