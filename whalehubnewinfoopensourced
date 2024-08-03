@@ -100,34 +100,27 @@ local function getExecutionCount()
     return executionCount
 end
 
--- Function to update the paragraph
-local function updateParagraph()
-    local details = getAccountDetails()
-    local timeOfDay = getTimeOfDay()
-    local executionCount = getExecutionCount()
+-- Get details and format the content
+local details = getAccountDetails()
+local timeOfDay = getTimeOfDay()
+local executionCount = getExecutionCount()
 
-    local content = string.format(
-        "Good %s %s.\nYou've executed this %d times.\nYou are currently %s.\n\n" ..
-        "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\n" ..
-        "Account Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
-        timeOfDay,
-        details.username,
-        executionCount,
-        details.premiumStatus,
-        details.time,
-        details.playersInServer,
-        details.maxPlayers,
-        details.placeId,
-        details.accountAge,
-        details.accountId,
-        details.gameName
-    )
+local content = string.format(
+    "Good %s %s.\nYou've executed this %d times.\nYou are currently %s.\n\n" ..
+    "Time: [%s]\nPlayers in server: [%d/%d]\nPlace ID: [%d]\n" ..
+    "Account Age: [%d days]\nAccount ID: [%d]\nGame Name: [%s]",
+    timeOfDay,
+    details.username,
+    executionCount,
+    details.premiumStatus,
+    details.time,
+    details.playersInServer,
+    details.maxPlayers,
+    details.placeId,
+    details.accountAge,
+    details.accountId,
+    details.gameName
+)
 
-    Paragraph:Set({Title = "Paragraph Example", Content = content})
-end
-
--- Update the paragraph every second (or adjust the interval as needed)
-while true do
-    updateParagraph()
-    wait(1) -- Adjust the wait time as needed
-end
+-- Set the paragraph content
+Paragraph:Set({Title = "Paragraph Example", Content = content})
