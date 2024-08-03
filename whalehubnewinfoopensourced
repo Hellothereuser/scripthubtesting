@@ -27,6 +27,7 @@ local Window = Rayfield:CreateWindow({
 })
 
 local Tab = Window:CreateTab("Home", 4483362458) -- Title, Image
+local Paragraph = Tab:CreateParagraph({Title = "Paragraph Example", Content = "Initializing..."})
 
 -- Function to get the time of day
 local function getTimeOfDay()
@@ -127,7 +128,11 @@ local function updateParagraph()
         details.gameName
     )
 
-    Tab:CreateParagraph({Title = "Paragraph Example", Content = content})
+    Paragraph:Set({Title = "Paragraph Example", Content = content})
 end
 
-updateParagraph()
+-- Update the paragraph every millisecond (or a more reasonable interval)
+while true do
+    updateParagraph()
+    wait(0.1)
+end
